@@ -229,7 +229,7 @@
         <a href="https://www.cloudflare.com/zh-cn/application-services/products/cdn/" target="_blank"
           rel="noopener noreferrer"><img src="./assets/svg/cdn.svg"></a>
         <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer"><img src="./assets/svg/web.svg"></a>
-        <a href="https://api.vvhan.com" target="_blank"><img src="./assets/svg/surppot.svg"></a>
+        <a href="https://www.vvhan.com" target="_blank"><img src="./assets/svg/surppot.svg"></a>
         <a href="https://github.com/uxiaohan/HanAnalytics" target="_blank"><img src="./assets/svg/codefrom.svg"></a>
       </p>
     </footer>
