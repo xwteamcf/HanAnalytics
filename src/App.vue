@@ -1,5 +1,5 @@
 <template>
-  <section class="han_analytics">
+  <section class="han_analytics" :class="currentTheme">
     <header>
       <div class="main">
         <div class="logo">
@@ -7,17 +7,6 @@
           <span>Han Analytics</span>
         </div>
         <h2>简单优雅的Web分析</h2>
-        <div class="theme-switcher">
-          <button 
-            v-for="mode in themeModes" 
-            :key="mode.value"
-            :class="['theme-btn', { active: themeMode === mode.value }]"
-            @click="setThemeMode(mode.value)"
-            :title="mode.label"
-          >
-            <component :is="mode.icon" :size="18" />
-          </button>
-        </div>
       </div>
     </header>
     <main>
@@ -316,27 +305,31 @@ const currentTheme = computed(() => {
 
 // 设置主题模式
 const setThemeMode = (mode: ThemeMode) => {
+  console.log('切换主题到:', mode); // 调试日志
   themeMode.value = mode;
   localStorage.setItem('themeMode', mode);
-  // 如果是自动模式，立即更新主题
-  if (mode === 'auto') {
-    updateAutoTheme();
-  } else {
-    updateEchartsTheme();
+  
+  // 清除旧的定时器
+  if (autoThemeTimer) {
+    clearInterval(autoThemeTimer);
+    autoThemeTimer = null;
   }
-};
-
-// 自动模式定时器
-let autoThemeTimer: number | null = null;
-const updateAutoTheme = () => {
-  if (autoThemeTimer) clearInterval(autoThemeTimer);
-  if (themeMode.value === 'auto') {
-    // 每分钟检查一次是否需要切换主题
+  
+  // 如果是自动模式，设置定时器
+  if (mode === 'auto') {
     autoThemeTimer = setInterval(() => {
       updateEchartsTheme();
     }, 60000);
   }
+  
+  // 立即更新图表
+  setTimeout(() => {
+    updateEchartsTheme();
+  }, 100);
 };
+
+// 自动模式定时器
+let autoThemeTimer: number | null = null;
 
 // 更新Echarts主题
 const updateEchartsTheme = () => {
@@ -580,8 +573,13 @@ onMounted(() => {
   window.addEventListener("resize", canvasMain.value.resize);
   // 站点列表
   getSiteList();
-  // 启动自动主题检查
-  updateAutoTheme();
+  
+  // 初始化主题
+  if (themeMode.value === 'auto') {
+    autoThemeTimer = setInterval(() => {
+      updateEchartsTheme();
+    }, 60000);
+  }
 });
 </script>
 <style>
@@ -617,59 +615,6 @@ onMounted(() => {
   background: rgba(96, 165, 250, 0.2);
 }
 
-/* 主题切换按钮样式 */
-.theme-switcher {
-  margin-left: 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.theme-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #e4e4e7;
-  background: #ffffff;
-  color: #71717a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.theme-btn:hover {
-  background: #f4f4f5;
-  color: #3b82f6;
-  border-color: #d4d4d8;
-}
-
-.theme-btn.active {
-  background: #3b82f6;
-  color: #ffffff;
-  border-color: #3b82f6;
-}
-
-/* 深色模式下的主题按钮 */
-.dark .theme-btn {
-  background: #27272a;
-  border-color: #3f3f46;
-  color: #a1a1aa;
-}
-
-.dark .theme-btn:hover {
-  background: #3f3f46;
-  color: #60a5fa;
-  border-color: #52525b;
-}
-
-.dark .theme-btn.active {
-  background: #3b82f6;
-  color: #ffffff;
-  border-color: #3b82f6;
-}
-
 /* 右下角浮动主题切换器 */
 .theme-switcher-float {
   position: fixed;
@@ -685,6 +630,46 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-switcher-float .theme-btn:hover {
+  background: #f4f4f5;
+  color: #3b82f6;
+  border-color: #d4d4d8;
+  transform: translateY(-2px);
+}
+
+.theme-switcher-float .theme-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+/* 深色模式下的浮动按钮 */
+.dark .theme-switcher-float .theme-btn {
+  background: #27272a;
+  border-color: #3f3f46;
+  color: #a1a1aa;
+}
+
+.dark .theme-switcher-float .theme-btn:hover {
+  background: #3f3f46;
+  color: #60a5fa;
+  border-color: #52525b;
+}
+
+.dark .theme-switcher-float .theme-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
 }
 </style>
 
