@@ -152,78 +152,79 @@
     }
   }
 
-  // 右下角浮动主题切换器
-  .theme-switcher-float {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 10000;
+// 右下角浮动主题切换器 - 在.han_analytics外部
+.theme-switcher-float {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 99999999 !important;
 
-    .theme-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border: none;
-      border-radius: 50%;
-      background: #ffffff;
-      color: #7f8c8d;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+  .theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #7f8c8d;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      color: #3498db;
+    }
+
+    &.active {
+      background: #3498db;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(52, 152, 219, 0.4);
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        color: #3498db;
-      }
-
-      &.active {
-        background: #3498db;
-        color: #ffffff;
-        box-shadow: 0 4px 16px rgba(52, 152, 219, 0.4);
-
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 24px rgba(52, 152, 219, 0.5);
-          background: #2980b9;
-        }
+        box-shadow: 0 6px 24px rgba(52, 152, 219, 0.5);
+        background: #2980b9;
       }
     }
   }
+}
 
-  &.dark .theme-switcher-float {
-    .theme-btn {
-      background: #34495e;
-      color: #95a5a6;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+// 暗色模式下的浮动按钮样式
+.dark .theme-switcher-float {
+  .theme-btn {
+    background: #34495e;
+    color: #95a5a6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      background: #2c3e50;
+      color: #3498db;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    &.active {
+      background: #3498db;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(52, 152, 219, 0.4);
 
       &:hover {
-        background: #2c3e50;
-        color: #3498db;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-      }
-
-      &.active {
-        background: #3498db;
-        color: #ffffff;
-        box-shadow: 0 4px 16px rgba(52, 152, 219, 0.4);
-
-        &:hover {
-          background: #2980b9;
-          box-shadow: 0 6px 24px rgba(52, 152, 219, 0.5);
-        }
+        background: #2980b9;
+        box-shadow: 0 6px 24px rgba(52, 152, 219, 0.5);
       }
     }
   }
+}
 
-  & > main {
-    box-sizing: border-box;
-    padding: 32px;
+.han_analytics & > main {
+  box-sizing: border-box;
+  padding: 32px;
     display: flex;
     flex-direction: column;
     width: 100%;
