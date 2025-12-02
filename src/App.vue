@@ -1,5 +1,5 @@
 <template>
-  <section class="han_analytics" :class="currentTheme">
+  <section class="han_analytics">
     <header>
       <div class="main">
         <div class="logo">
@@ -233,19 +233,6 @@
       </p>
     </footer>
   </section>
-  <!-- 右下角浮动主题切换器 -->
-  <div class="theme-switcher-float">
-    <button 
-      v-for="mode in themeModes" 
-      :key="mode.value"
-      :class="['theme-btn', { active: themeMode === mode.value }]"
-      @click="setThemeMode(mode.value)"
-      :title="mode.label"
-    >
-      <component :is="mode.icon" :size="20" />
-    </button>
-  </div>
-  
   <div class="z-[999999999]">
     <Toaster />
   </div>
@@ -268,10 +255,10 @@
 
 
 <script setup lang="ts">
-import { ref, markRaw, onMounted, computed, watch } from 'vue'
+import { ref, markRaw, onMounted } from 'vue'
 import * as echarts from "echarts";
 import { Button } from '@/components/ui/button'
-import { Loader2, Sun, Moon, Clock } from 'lucide-vue-next'
+import { Loader2 } from 'lucide-vue-next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -284,109 +271,6 @@ const { toast } = useToast();
 // 弹窗
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
-
-// 主题模式
-type ThemeMode = 'light' | 'dark' | 'auto';
-const themeMode = ref<ThemeMode>((localStorage.getItem('themeMode') as ThemeMode) || 'auto');
-const themeModes = [
-  { value: 'light' as ThemeMode, label: '日间模式', icon: Sun },
-  { value: 'dark' as ThemeMode, label: '夜间模式', icon: Moon },
-  { value: 'auto' as ThemeMode, label: '自动模式', icon: Clock }
-];
-
-// 计算当前应用的主题
-const currentTheme = computed(() => {
-  if (themeMode.value === 'auto') {
-    const hour = new Date().getHours();
-    return (hour >= 6 && hour < 18) ? 'light' : 'dark';
-  }
-  return themeMode.value;
-});
-
-// 设置主题模式
-const setThemeMode = (mode: ThemeMode) => {
-  themeMode.value = mode;
-  localStorage.setItem('themeMode', mode);
-  // 如果是自动模式，立即更新主题
-  if (mode === 'auto') {
-    updateAutoTheme();
-  } else {
-    updateEchartsTheme();
-  }
-};
-
-// 自动模式定时器
-let autoThemeTimer: number | null = null;
-const updateAutoTheme = () => {
-  if (autoThemeTimer) clearInterval(autoThemeTimer);
-  if (themeMode.value === 'auto') {
-    // 每分钟检查一次是否需要切换主题
-    autoThemeTimer = setInterval(() => {
-      updateEchartsTheme();
-    }, 60000);
-  }
-};
-
-// 更新Echarts主题
-const updateEchartsTheme = () => {
-  if (canvasMain.value && tempResData.value.echarts) {
-    const isDark = currentTheme.value === 'dark';
-    const option = canvasMain.value.getOption();
-    if (option && option.xAxis && option.xAxis[0]) {
-      option.xAxis[0].axisLabel = { color: isDark ? '#9ca3af' : '#6b7280' };
-      option.xAxis[0].axisLine = { 
-        lineStyle: { 
-          color: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', 
-          width: 2, 
-          type: 'dashed' 
-        } 
-      };
-      option.yAxis[0].axisLabel = { color: isDark ? '#9ca3af' : '#6b7280' };
-      
-      // 更新线条和区域颜色
-      const series = option.series[0];
-      series.lineStyle = {
-        width: 2,
-        color: {
-          colorStops: [{ offset: 1, color: isDark ? '#60a5fa' : '#6F94F1' }],
-          x: 0, y: 0, x2: 1, y2: 0,
-          type: 'linear',
-          global: false
-        }
-      };
-      series.areaStyle = {
-        opacity: 1,
-        color: {
-          colorStops: [
-            { offset: 0, color: isDark ? 'rgba(96, 165, 250, 0.3)' : '#DAE4FF' },
-            { offset: 1, color: isDark ? 'rgba(96, 165, 250, 0.05)' : '#ffffff' }
-          ],
-          x: 0, y: 0, x2: 0, y2: 1,
-          type: 'linear',
-          global: false
-        }
-      };
-      series.emphasis.areaStyle = {
-        color: {
-          colorStops: [
-            { offset: 0, color: isDark ? 'rgba(96, 165, 250, 0.4)' : '#DAE4FF' },
-            { offset: 1, color: isDark ? 'rgba(96, 165, 250, 0.1)' : '#ffffff' }
-          ],
-          x: 0, y: 0, x2: 0, y2: 1,
-          type: 'linear',
-          global: false
-        }
-      };
-      
-      canvasMain.value.setOption(option);
-    }
-  }
-};
-
-// 监听主题变化
-watch(currentTheme, () => {
-  updateEchartsTheme();
-});
 
 // 登录
 const authStatus = ref<boolean>(false)
@@ -490,22 +374,16 @@ const getIcon = (code: string) => `${location.origin}/icon/${code}.png`
 const echartsDOM = ref<HTMLCanvasElement>();
 const canvasMain = ref<any>();
 const renderEcharts = async (dateList: Array<any>, valueList: Array<any>) => {
-  const isDark = currentTheme.value === 'dark';
   const option = {
     grid: { left: "0", right: "0", bottom: "0", top: "10", containLabel: true },
     xAxis: {
       type: "category",
       data: dateList,
-      axisLabel: { color: isDark ? '#9ca3af' : '#6b7280' },
-      axisLine: { lineStyle: { color: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', width: 2, type: 'dashed' } }
+      axisLabel: { color: "#959BAA" },
+      axisLine: { lineStyle: { color: "rgba(255,255,255,0.56)", width: 2, type: "dashed" } }
     },
-    yAxis: { type: "value", axisLabel: { color: isDark ? '#9ca3af' : '#6b7280' } },
-    tooltip: { 
-      trigger: "axis",
-      backgroundColor: isDark ? '#1f2937' : '#ffffff',
-      borderColor: isDark ? '#374151' : '#e5e7eb',
-      textStyle: { color: isDark ? '#f3f4f6' : '#111827' }
-    },
+    yAxis: { type: "value", axisLabel: { color: "#959BAA" } },
+    tooltip: { trigger: "axis" },
     series: [
       {
         data: valueList,
@@ -517,8 +395,8 @@ const renderEcharts = async (dateList: Array<any>, valueList: Array<any>) => {
           areaStyle: {
             color: {
               colorStops: [
-                { offset: 0, color: isDark ? 'rgba(96, 165, 250, 0.4)' : '#DAE4FF' },
-                { offset: 1, color: isDark ? 'rgba(96, 165, 250, 0.1)' : '#ffffff' }
+                { offset: 0, color: "#DAE4FF" },
+                { offset: 1, color: "#ffffff" }
               ],
               x: 0,
               y: 0,
@@ -532,7 +410,7 @@ const renderEcharts = async (dateList: Array<any>, valueList: Array<any>) => {
         lineStyle: {
           width: 2,
           color: {
-            colorStops: [{ offset: 1, color: isDark ? '#60a5fa' : '#6F94F1' }],
+            colorStops: [{ offset: 1, color: "#6F94F1" }],
             x: 0,
             y: 0,
             x2: 1,
@@ -546,8 +424,8 @@ const renderEcharts = async (dateList: Array<any>, valueList: Array<any>) => {
           opacity: 1,
           color: {
             colorStops: [
-              { offset: 0, color: isDark ? 'rgba(96, 165, 250, 0.3)' : '#DAE4FF' },
-              { offset: 1, color: isDark ? 'rgba(96, 165, 250, 0.05)' : '#ffffff' }
+              { offset: 0, color: "#DAE4FF" },
+              { offset: 1, color: "#ffffff" }
             ],
             x: 0,
             y: 0,
@@ -568,10 +446,8 @@ onMounted(() => {
   canvasMain.value = markRaw(echarts.init(echartsDOM.value, null, { renderer: "svg", useDirtyRect: true }));
   window.addEventListener("resize", canvasMain.value.resize);
   // 站点列表
-  getSiteList();
-  // 启动自动主题检查
-  updateAutoTheme();
-});
+  getSiteList()
+})
 </script>
 <style>
 .fixed.inset-0.z-50,
