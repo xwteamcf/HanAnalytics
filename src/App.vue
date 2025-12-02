@@ -574,6 +574,51 @@ onMounted(() => {
 .han_analytics.dark .git-link {
   color: #60a5fa;
 }
+
+/* 深色模式下的卡片和文字 */
+.han_analytics.dark .pages-list p.page-item {
+  color: #e4e4e7;
+}
+
+.han_analytics.dark .pages-list p.page-item:hover {
+  background: #27272a;
+}
+
+.han_analytics.dark .pages-list p.page-item > em {
+  color: #a1a1aa;
+  border-left-color: #3f3f46;
+}
+
+.han_analytics.dark .pages-list p.page-item > em > i {
+  background: #27272a;
+}
+
+/* 深色模式下的百分比和数字 */
+.han_analytics.dark .pages-list p.page-item > span {
+  color: #fafafa !important;
+}
+
+/* 深色模式下的Alert */
+.han_analytics.dark :global(.alert) {
+  background: #18181b;
+  border-color: #27272a;
+  color: #fafafa;
+}
+
+/* 深色模式下的Card */
+.han_analytics.dark :global(.card) {
+  background: #18181b;
+  border-color: #27272a;
+  color: #fafafa;
+}
+
+/* 深色模式下的Select和Button */
+.han_analytics.dark :global(.select-trigger),
+.han_analytics.dark :global(.button) {
+  background: #27272a;
+  border-color: #3f3f46;
+  color: #fafafa;
+}
 </style>
 
 <style scoped>
