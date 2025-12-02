@@ -4,7 +4,7 @@
       <div class="main">
         <div class="logo">
           <img src="./assets/favicon.ico">
-          <span>Han Analytics</span>
+          <span>Analytics</span>
         </div>
         <h2>简单优雅的Web分析</h2>
       </div>
@@ -33,7 +33,7 @@
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Web Site</SelectLabel>
+                    <SelectLabel>选择站点</SelectLabel>
                     <SelectItem :value="i" v-for="i in siteList" :key="i">{{ i }}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -47,7 +47,7 @@
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Cycle Time</SelectLabel>
+                    <SelectLabel>选择周期</SelectLabel>
                     <SelectItem :value="i.value" v-for="i in timeList" :key="i.name">{{ i.name }}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -57,7 +57,7 @@
           <div
             class="flex justify-end text-center md:text-right line-clamp-1 [&>.views-item]:flex [&>.views-item]:flex-col [&>.views-item]:items-center md:[&>.views-item]:items-end [&>.views-item]:gap-4 [&>.views-item>span]:text-sm [&>.views-item>p]:text-3xl [&>.views-item>p]:line-clamp-1 [&>.views-item>p]:w-full">
             <div class="views-item w-full overflow-hidden">
-              <span>Views</span>
+              <span>浏览量</span>
               <div class="space-y-2 w-[50%]" v-if="resData.visit.views === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
@@ -65,7 +65,7 @@
               <p v-else>{{ resData.visit.views }}</p>
             </div>
             <div class="views-item w-full overflow-hidden">
-              <span>Visitors</span>
+              <span>访客数</span>
               <div class="space-y-2 w-[50%]" v-if="resData.visit.visitor === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
@@ -73,7 +73,7 @@
               <p v-else>{{ resData.visit.visitor }}</p>
             </div>
             <div class="views-item w-full overflow-hidden">
-              <span>Visits</span>
+              <span>访问次数</span>
               <div class="space-y-2 w-[50%]" v-if="resData.visit.visit === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
@@ -88,7 +88,7 @@
         <div class="pt-20 grid md:grid-cols-2 sm:grid-cols-1 gap-[16px]">
           <Card class="box-border flex flex-col w-full h-[460px] overflow-hidden">
             <CardHeader>
-              <CardTitle>Pages</CardTitle>
+              <CardTitle>访问页面</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.path != undefined">
@@ -113,7 +113,7 @@
 
           <Card class="box-border flex flex-col w-full h-[460px] overflow-hidden">
             <CardHeader>
-              <CardTitle>Referrers</CardTitle>
+              <CardTitle>来源网站</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.referrer != undefined">
@@ -143,7 +143,7 @@
         <div class="pt-6 grid xl:grid-cols-3 gap-[16px] md:grid-cols-2 sm:grid-cols-1">
           <Card class="box-border flex flex-col w-full h-[460px] overflow-hidden">
             <CardHeader>
-              <CardTitle>Browsers</CardTitle>
+              <CardTitle>浏览器</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.soft != undefined">
@@ -168,7 +168,7 @@
 
           <Card class="box-border flex flex-col w-full h-[460px] overflow-hidden">
             <CardHeader>
-              <CardTitle>OS</CardTitle>
+              <CardTitle>操作系统</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.os != undefined">
@@ -195,7 +195,7 @@
 
           <Card class="box-border flex flex-col w-full h-[460px] overflow-hidden">
             <CardHeader>
-              <CardTitle>Areas</CardTitle>
+              <CardTitle>访问地区</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.area != undefined">
