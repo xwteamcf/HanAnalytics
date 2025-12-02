@@ -229,6 +229,7 @@
         <a href="https://api.xwteam.cn" target="_blank"
           rel="noopener noreferrer"><img src="./assets/svg/api.svg"></a>
         <a href="https://free.xwteam.cn" target="_blank" rel="noopener noreferrer"><img src="./assets/svg/freeapi.svg"></a>
+        <a href="https://analysis.xwteam.com/" target="_blank" rel="noopener noreferrer"><img src="./assets/svg/analysis.svg"></a>
       </p>
       <p>
         <a href="https://pages.cloudflare.com" target="_blank" rel="noopener noreferrer"><img
