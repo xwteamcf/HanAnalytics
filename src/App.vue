@@ -8,17 +8,6 @@
         </div>
         <h2>简单优雅的Web分析</h2>
       </div>
-      <div class="theme-switcher">
-        <button 
-          v-for="mode in themeModes" 
-          :key="mode.value"
-          :class="['theme-btn', { active: themeMode === mode.value }]"
-          @click="setThemeMode(mode.value)"
-          :title="mode.label"
-        >
-          <component :is="mode.icon" :size="20" />
-        </button>
-      </div>
     </header>
     <main>
       <header>
@@ -244,6 +233,19 @@
       </p>
     </footer>
   </section>
+  <!-- 右下角浮动主题切换器 -->
+  <div class="theme-switcher-float">
+    <button 
+      v-for="mode in themeModes" 
+      :key="mode.value"
+      :class="['theme-btn', { active: themeMode === mode.value }]"
+      @click="setThemeMode(mode.value)"
+      :title="mode.label"
+    >
+      <component :is="mode.icon" :size="20" />
+    </button>
+  </div>
+  
   <div class="z-[999999999]">
     <Toaster />
   </div>
