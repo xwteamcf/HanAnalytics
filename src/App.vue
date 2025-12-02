@@ -7,6 +7,17 @@
           <span>Han Analytics</span>
         </div>
         <h2>简单优雅的Web分析</h2>
+        <div class="theme-switcher">
+          <button 
+            v-for="mode in themeModes" 
+            :key="mode.value"
+            :class="['theme-btn', { active: themeMode === mode.value }]"
+            @click="setThemeMode(mode.value)"
+            :title="mode.label"
+          >
+            <component :is="mode.icon" :size="18" />
+          </button>
+        </div>
       </div>
     </header>
     <main>
@@ -258,7 +269,7 @@
 import { ref, markRaw, onMounted } from 'vue'
 import * as echarts from "echarts";
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, Sun, Moon, Clock } from 'lucide-vue-next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -268,6 +279,40 @@ import vh from 'vh-plugin'
 import { Toaster } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/toast/use-toast'
 const { toast } = useToast();
+
+// 主题模式
+const themeModes = ref([
+  { value: 'light', label: '日间模式', icon: Sun },
+  { value: 'dark', label: '夜间模式', icon: Moon },
+  { value: 'auto', label: '自动模式', icon: Clock }
+]);
+const themeMode = ref(localStorage.getItem('themeMode') || 'auto');
+
+// 设置主题模式
+const setThemeMode = (mode: string) => {
+  themeMode.value = mode;
+  localStorage.setItem('themeMode', mode);
+  applyTheme();
+};
+
+// 应用主题
+const applyTheme = () => {
+  const root = document.documentElement;
+  let theme = themeMode.value;
+  
+  if (theme === 'auto') {
+    const hour = new Date().getHours();
+    theme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+  }
+  
+  if (theme === 'dark') {
+    root.classList.add('dark');
+    document.querySelector('.han_analytics')?.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+    document.querySelector('.han_analytics')?.classList.remove('dark');
+  }
+};
 // 弹窗
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
@@ -446,13 +491,88 @@ onMounted(() => {
   canvasMain.value = markRaw(echarts.init(echartsDOM.value, null, { renderer: "svg", useDirtyRect: true }));
   window.addEventListener("resize", canvasMain.value.resize);
   // 站点列表
-  getSiteList()
+  getSiteList();
+  
+  // 初始化主题
+  applyTheme();
+  // 自动模式每分钟检查一次
+  if (themeMode.value === 'auto') {
+    setInterval(applyTheme, 60000);
+  }
 })
 </script>
 <style>
 .fixed.inset-0.z-50,
 .fixed.grid.w-full.max-w-lg.shadow-lg.duration-200 {
   z-index: 99999999;
+}
+
+/* 主题切换按钮样式 */
+.theme-switcher {
+  margin-left: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+  background: #f4f4f5;
+  color: #3b82f6;
+  border-color: #d4d4d8;
+}
+
+.theme-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+/* 深色模式 */
+.dark .theme-btn {
+  background: #27272a;
+  border-color: #3f3f46;
+  color: #a1a1aa;
+}
+
+.dark .theme-btn:hover {
+  background: #3f3f46;
+  color: #60a5fa;
+  border-color: #52525b;
+}
+
+.dark .theme-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+/* 深色模式背景 */
+.han_analytics.dark {
+  background: #09090b;
+  color: #fafafa;
+}
+
+.han_analytics.dark > header {
+  background: rgba(24, 24, 27, 0.8);
+  border-bottom-color: #27272a;
+}
+
+.han_analytics.dark .git-link {
+  color: #60a5fa;
 }
 </style>
 
