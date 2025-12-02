@@ -224,6 +224,13 @@
     <footer>
       <p><img src="./assets/svg/ing.svg"></p>
       <p>
+        <a href="https://www.xwteam.cn" target="_blank" rel="noopener noreferrer"><img
+            src="./assets/svg/blog.svg"></a>
+        <a href="https://api.xwteam.cn" target="_blank"
+          rel="noopener noreferrer"><img src="./assets/svg/api.svg"></a>
+        <a href="https://free.xwteam.cn" target="_blank" rel="noopener noreferrer"><img src="./assets/svg/freeapi.svg"></a>
+      </p>
+      <p>
         <a href="https://pages.cloudflare.com" target="_blank" rel="noopener noreferrer"><img
             src="./assets/svg/framework.svg"></a>
         <a href="https://edgeone.ai" target="_blank"
