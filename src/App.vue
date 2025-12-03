@@ -407,24 +407,35 @@ const dateInfo = ref<string>('')
 // 获取日期信息
 const fetchDateInfo = async () => {
   try {
+    console.log('开始获取日期信息...');
     const response = await fetch('https://api.xwteam.cn/api/time/almanac?key=aOxWVWCoyTFGsBTstbPmXySBp0');
+    console.log('API响应状态:', response.status);
+    
     const data = await response.json();
+    console.log('API返回的完整数据:', data);
     
     if (data && data.data) {
+      console.log('data.data:', data.data);
       const gongli = data.data['公历'];
       const nongli = data.data['农历']['日期'].trim().replace(/\s+/g, '');
       const tgdz = '[' + data.data['农历']['天干地支'].trim().replace(/\s+/g, '') + ']';
       const jieri = data.data['节日'];
+      
+      console.log('解析结果 - 公历:', gongli, '农历:', nongli, '天干地支:', tgdz, '节日:', jieri);
       
       if (jieri) {
         dateInfo.value = `今天是${gongli}[${jieri}]<font color="#FF0000">${nongli}${tgdz}</font>`;
       } else {
         dateInfo.value = `今天是${gongli}<font color="#FF0000">${nongli}${tgdz}</font>`;
       }
+      console.log('最终显示内容:', dateInfo.value);
+    } else {
+      console.warn('API返回数据格式不正确，缺少data字段');
+      dateInfo.value = '您当前正在访问网站「Analysis」';
     }
   } catch (error) {
     console.error('获取日期信息失败:', error);
-    dateInfo.value = '简单优雅的Web分析';
+    dateInfo.value = '您当前正在访问网站「Analysis」';
   }
 };
 
