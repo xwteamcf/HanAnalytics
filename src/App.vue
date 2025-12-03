@@ -6,7 +6,7 @@
           <img src="./assets/favicon.ico">
           <span>Analytics</span>
         </div>
-        <h2>简单优雅的Web分析</h2>
+        <h2 v-html="dateInfo || '您当前正在访问网站「Analysis」'"></h2>
       </div>
     </header>
     <main>
@@ -401,6 +401,33 @@ watch(currentTheme, () => {
   updateEchartsTheme();
 });
 
+// 日期信息
+const dateInfo = ref<string>('')
+
+// 获取日期信息
+const fetchDateInfo = async () => {
+  try {
+    const response = await fetch('https://api.xwteam.cn/api/time/almanac?key=aOxWVWCoyTFGsBTstbPmXySBp0');
+    const data = await response.json();
+    
+    if (data && data.data) {
+      const gongli = data.data['公历'];
+      const nongli = data.data['农历']['日期'].trim().replace(/\s+/g, '');
+      const tgdz = '[' + data.data['农历']['天干地支'].trim().replace(/\s+/g, '') + ']';
+      const jieri = data.data['节日'];
+      
+      if (jieri) {
+        dateInfo.value = `今天是${gongli}[${jieri}]<font color="#FF0000">${nongli}${tgdz}</font>`;
+      } else {
+        dateInfo.value = `今天是${gongli}<font color="#FF0000">${nongli}${tgdz}</font>`;
+      }
+    }
+  } catch (error) {
+    console.error('获取日期信息失败:', error);
+    dateInfo.value = '简单优雅的Web分析';
+  }
+};
+
 // 登录
 const authStatus = ref<boolean>(false)
 const session = ref<string>(localStorage.getItem('session') || '')
@@ -582,6 +609,8 @@ onMounted(() => {
   window.addEventListener("resize", canvasMain.value.resize);
   // 站点列表
   getSiteList();
+  // 获取日期信息
+  fetchDateInfo();
   
   // 初始化主题
   if (themeMode.value === 'auto') {
