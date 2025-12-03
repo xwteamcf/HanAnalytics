@@ -407,13 +407,15 @@ const dateInfo = ref<string>('')
 // 获取日期信息
 const fetchDateInfo = async () => {
   try {
-    console.log('开始获取日期信息...');
+    console.log('%c📅 正在获取日期信息...', 'color: #3b82f6; font-weight: bold;');
+    console.log('%c🔗 接口来源: https://free.xwteam.cn', 'color: #10b981; font-size: 12px;');
+    
     // 使用简单请求，不设置自定义头部，避免触发CORS预检
     const response = await fetch('https://free.xwteam.cn/api/time/almanac');
-    console.log('API响应状态:', response.status);
+    console.log('%c✅ API响应成功', `color: #10b981; font-weight: bold;`, `状态码: ${response.status}`);
     
     const data = await response.json();
-    console.log('API返回的完整数据:', data);
+    console.log('%c📦 API返回数据:', 'color: #8b5cf6; font-weight: bold;', data);
     
     if (data && data.code === 200 && data.data) {
       const apiData = data.data;
@@ -430,14 +432,15 @@ const fetchDateInfo = async () => {
       // 节日
       const jieri = apiData['节日'];
       
-      console.log('解析结果 - 公历:', gongli, '农历:', nongli, '天干地支:', tgdz, '节日:', jieri);
+      console.log('%c🎯 解析结果:', 'color: #f59e0b; font-weight: bold;', { 公历: gongli, 农历: nongli, 天干地支: tgdz, 节日: jieri });
       
       if (jieri) {
         dateInfo.value = `今天是${gongli}[${jieri}]<font color="#FF0000">${nongli}${tgdz}</font>`;
       } else {
         dateInfo.value = `今天是${gongli}<font color="#FF0000">${nongli}${tgdz}</font>`;
       }
-      console.log('最终显示内容:', dateInfo.value);
+      console.log('%c✨ 最终显示:', 'color: #ec4899; font-weight: bold;', dateInfo.value);
+      console.log('%c💡 喜欢这个API？访问 https://free.xwteam.cn 查看更多免费接口！', 'color: #3b82f6; font-size: 14px; font-weight: bold; background: #eff6ff; padding: 8px; border-radius: 4px;');
     } else {
       console.warn('API返回数据格式不正确', data);
       dateInfo.value = '您当前正在访问网站「Analysis」';
