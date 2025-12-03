@@ -304,9 +304,6 @@ const { toast } = useToast();
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
 
-// 导入简繁转换脚本
-import '@/assets/js/language.js'
-
 // 主题模式
 type ThemeMode = 'light' | 'dark' | 'auto';
 const themeMode = ref<ThemeMode>((localStorage.getItem('themeMode') as ThemeMode) || 'auto');
