@@ -414,23 +414,33 @@ const fetchDateInfo = async () => {
     const data = await response.json();
     console.log('API返回的完整数据:', data);
     
-    if (data && data.data) {
-      console.log('data.data:', data.data);
-      const gongli = data.data['公历'];
-      const nongli = data.data['农历']['日期'].trim().replace(/\s+/g, '');
-      const tgdz = '[' + data.data['农历']['天干地支'].trim().replace(/\s+/g, '') + ']';
-      const jieri = data.data['节日'];
+    if (data && data.code === 200 && data.data) {
+      const apiData = data.data;
+      
+      // 公历：2025年12月03日 星期三
+      const gongli = apiData['公历'];
+      
+      // 农历日期：农历 十月 十四 -> 去掉"农历"二字和空格
+      const nongli = apiData['农历']['日期'].replace('农历', '').trim().replace(/\s+/g, '');
+      
+      // 天干地支：乙巳年 (蛇年) 丁亥月 丙午日 -> 提取年月日，去掉括号内容
+      const tgdzRaw = apiData['农历']['天干地支'];
+      const tgdzMatch = tgdzRaw.match(/(\S+)年\s*\([^)]+\)\s*(\S+)月\s*(\S+)日/);
+      const tgdz = tgdzMatch ? `[${tgdzMatch[1]}年${tgdzMatch[2]}月${tgdzMatch[3]}日]` : `[${tgdzRaw}]`;
+      
+      // 节日
+      const jieri = apiData['节日'];
       
       console.log('解析结果 - 公历:', gongli, '农历:', nongli, '天干地支:', tgdz, '节日:', jieri);
       
       if (jieri) {
-        dateInfo.value = `今天是${gongli}[${jieri}]<font color="#FF0000">${nongli}${tgdz}</font>`;
+        dateInfo.value = `今天是${gongli} [${jieri}] <font color="#FF0000">${nongli}${tgdz}</font>`;
       } else {
-        dateInfo.value = `今天是${gongli}<font color="#FF0000">${nongli}${tgdz}</font>`;
+        dateInfo.value = `今天是${gongli} <font color="#FF0000">${nongli}${tgdz}</font>`;
       }
       console.log('最终显示内容:', dateInfo.value);
     } else {
-      console.warn('API返回数据格式不正确，缺少data字段');
+      console.warn('API返回数据格式不正确', data);
       dateInfo.value = '您当前正在访问网站「Analysis」';
     }
   } catch (error) {
