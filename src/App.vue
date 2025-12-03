@@ -408,7 +408,12 @@ const dateInfo = ref<string>('')
 const fetchDateInfo = async () => {
   try {
     console.log('开始获取日期信息...');
-    const response = await fetch('https://api.xwteam.cn/api/time/almanac?key=aOxWVWCoyTFGsBTstbPmXySBp0');
+    const response = await fetch('https://api.xwteam.cn/api/time/almanac?key=aOxWVWCoyTFGsBTstbPmXySBp0', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+      }
+    });
     console.log('API响应状态:', response.status);
     
     const data = await response.json();
