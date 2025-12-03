@@ -414,14 +414,24 @@ watch(currentTheme, () => {
   updateEchartsTheme();
 });
 
-// 简繁体切换
+// 简繁体切换 - 使用language.js提供的全局函数
 type LangMode = 's' | 't' | 'n'; // s=简体, t=繁体, n=正常
 const langMode = ref<LangMode>('n');
 
+// 声明全局window对象的类型
+declare global {
+  interface Window {
+    zh_tran: (mode: LangMode) => void;
+    zh_choose: LangMode;
+    getCookie: (name: string) => string;
+  }
+}
+
 // 初始化语言模式
 const initLanguage = () => {
-  const savedLang = localStorage.getItem('zh_choose') as LangMode;
-  if (savedLang) {
+  // 从cookie或localStorage读取保存的语言设置
+  const savedLang = (localStorage.getItem('zh_choose') || window.getCookie?.('zh_choose') || 'n') as LangMode;
+  if (savedLang && savedLang !== 'n') {
     langMode.value = savedLang;
   }
 };
@@ -437,12 +447,11 @@ const toggleLanguage = () => {
     langMode.value = 'n';
   }
   
-  // 保存到localStorage
-  localStorage.setItem('zh_choose', langMode.value);
-  
-  // 调用language.js的转换函数
-  if (typeof (window as any).zh_tran === 'function') {
-    (window as any).zh_tran(langMode.value);
+  // 调用language.js的全局函数进行转换
+  if (typeof window.zh_tran === 'function') {
+    window.zh_tran(langMode.value);
+  } else {
+    console.error('language.js未正确加载');
   }
   
   console.log('%c🌏 语言切换:', 'color: #10b981; font-weight: bold;', 
