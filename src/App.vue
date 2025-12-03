@@ -409,7 +409,7 @@ const fetchDateInfo = async () => {
   try {
     console.log('开始获取日期信息...');
     // 使用简单请求，不设置自定义头部，避免触发CORS预检
-    const response = await fetch('https://free.xwteam.cn/api/time/almanac?key=aOxWVWCoyTFGsBTstbPmXySBp0');
+    const response = await fetch('https://free.xwteam.cn/api/time/almanac');
     console.log('API响应状态:', response.status);
     
     const data = await response.json();
@@ -421,13 +421,11 @@ const fetchDateInfo = async () => {
       // 公历：2025年12月03日 星期三
       const gongli = apiData['公历'];
       
-      // 农历日期：农历 十月 十四 -> 去掉"农历"二字和空格
-      const nongli = apiData['农历']['日期'].replace('农历', '').trim().replace(/\s+/g, '');
+      // 农历日期：农历 十月 十四 -> 保留"农历"，去掉多余空格
+      const nongli = apiData['农历']['日期'].trim().replace(/\s+/g, '');
       
-      // 天干地支：乙巳年 (蛇年) 丁亥月 丙午日 -> 提取年月日，去掉括号内容
-      const tgdzRaw = apiData['农历']['天干地支'];
-      const tgdzMatch = tgdzRaw.match(/(\S+)年\s*\([^)]+\)\s*(\S+)月\s*(\S+)日/);
-      const tgdz = tgdzMatch ? `[${tgdzMatch[1]}年${tgdzMatch[2]}月${tgdzMatch[3]}日]` : `[${tgdzRaw}]`;
+      // 天干地支：乙巳年 (蛇年) 丁亥月 丙午日 -> 保留完整内容，只去掉多余空格
+      const tgdz = '[' + apiData['农历']['天干地支'].replace(/\s+/g, '') + ']';
       
       // 节日
       const jieri = apiData['节日'];
@@ -435,9 +433,9 @@ const fetchDateInfo = async () => {
       console.log('解析结果 - 公历:', gongli, '农历:', nongli, '天干地支:', tgdz, '节日:', jieri);
       
       if (jieri) {
-        dateInfo.value = `今天是${gongli} [${jieri}] <font color="#FF0000">${nongli}${tgdz}</font>`;
+        dateInfo.value = `今天是${gongli}[${jieri}]<font color="#FF0000">${nongli}${tgdz}</font>`;
       } else {
-        dateInfo.value = `今天是${gongli} <font color="#FF0000">${nongli}${tgdz}</font>`;
+        dateInfo.value = `今天是${gongli}<font color="#FF0000">${nongli}${tgdz}</font>`;
       }
       console.log('最终显示内容:', dateInfo.value);
     } else {
