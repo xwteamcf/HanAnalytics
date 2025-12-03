@@ -464,21 +464,21 @@ const initLanguage = () => {
 
 // 切换简繁体
 const toggleLanguage = () => {
-  if (langMode.value === 'n') {
-    langMode.value = 't';
-  } else if (langMode.value === 't') {
-    langMode.value = 's';
+  // 简繁体互换：简体(s) <-> 繁体(t)
+  if (langMode.value === 's' || langMode.value === 'n') {
+    langMode.value = 't';  // 切换到繁体
   } else {
-    langMode.value = 'n';
+    langMode.value = 's';  // 切换到简体
   }
+  
+  // 保存设置
   localStorage.setItem('zh_choose', langMode.value);
-  if (langMode.value === 'n') {
-    window.location.reload();
-  } else {
-    convertNode(document.body, langMode.value);
-  }
+  
+  // 执行转换
+  convertNode(document.body, langMode.value);
+  
   console.log('%c🌏 语言切换:', 'color: #10b981; font-weight: bold;', 
-    langMode.value === 't' ? '繁體中文' : (langMode.value === 's' ? '简体中文' : '正常显示'));
+    langMode.value === 't' ? '繁體中文' : '简体中文');
 };
 
 // 日期信息
