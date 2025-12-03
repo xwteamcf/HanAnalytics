@@ -4,7 +4,7 @@
       <div class="main">
         <div class="logo">
           <img src="./assets/favicon.ico">
-          <span>Analytics</span>
+          <span>Analysis</span>
         </div>
         <h2 v-html="dateInfo || '您当前正在访问网站「Analysis」'"></h2>
       </div>
