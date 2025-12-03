@@ -242,8 +242,18 @@
       </p>
     </footer>
   </section>
-  <!-- 右下角浮动主题切换器 -->
+  <!-- 右下角浮动切换器 -->
   <div class="theme-switcher-float">
+    <!-- 简繁体切换按钮 -->
+    <button 
+      :class="['theme-btn', { active: langMode !== 'n' }]"
+      @click="toggleLanguage"
+      :title="langMode === 't' ? '繁體中文' : (langMode === 's' ? '简体中文' : '简繁切换')"
+    >
+      <Languages :size="20" />
+    </button>
+    
+    <!-- 主题切换按钮 -->
     <button 
       v-for="mode in themeModes" 
       :key="mode.value"
@@ -280,7 +290,7 @@
 import { ref, markRaw, onMounted, computed, watch } from 'vue'
 import * as echarts from "echarts";
 import { Button } from '@/components/ui/button'
-import { Loader2, Sun, Moon, Clock } from 'lucide-vue-next'
+import { Loader2, Sun, Moon, Clock, Languages } from 'lucide-vue-next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -293,6 +303,9 @@ const { toast } = useToast();
 // 弹窗
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
+
+// 导入简繁转换脚本
+import '@/assets/js/language.js'
 
 // 主题模式
 type ThemeMode = 'light' | 'dark' | 'auto';
@@ -400,6 +413,41 @@ const updateEchartsTheme = () => {
 watch(currentTheme, () => {
   updateEchartsTheme();
 });
+
+// 简繁体切换
+type LangMode = 's' | 't' | 'n'; // s=简体, t=繁体, n=正常
+const langMode = ref<LangMode>('n');
+
+// 初始化语言模式
+const initLanguage = () => {
+  const savedLang = localStorage.getItem('zh_choose') as LangMode;
+  if (savedLang) {
+    langMode.value = savedLang;
+  }
+};
+
+// 切换简繁体
+const toggleLanguage = () => {
+  // 切换顺序：正常(n) -> 繁体(t) -> 简体(s) -> 正常(n)
+  if (langMode.value === 'n') {
+    langMode.value = 't';
+  } else if (langMode.value === 't') {
+    langMode.value = 's';
+  } else {
+    langMode.value = 'n';
+  }
+  
+  // 保存到localStorage
+  localStorage.setItem('zh_choose', langMode.value);
+  
+  // 调用language.js的转换函数
+  if (typeof (window as any).zh_tran === 'function') {
+    (window as any).zh_tran(langMode.value);
+  }
+  
+  console.log('%c🌏 语言切换:', 'color: #10b981; font-weight: bold;', 
+    langMode.value === 't' ? '繁體中文' : (langMode.value === 's' ? '简体中文' : '正常显示'));
+};
 
 // 日期信息
 const dateInfo = ref<string>('')
@@ -634,6 +682,8 @@ onMounted(() => {
   getSiteList();
   // 获取日期信息
   fetchDateInfo();
+  // 初始化语言模式
+  initLanguage();
   
   // 初始化主题
   if (themeMode.value === 'auto') {
